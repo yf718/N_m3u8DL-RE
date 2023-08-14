@@ -19,7 +19,7 @@ on:
         default: 'main'
 
 env:
-  DOTNET_SDK_VERSION: "8.0.*"
+  DOTNET_SDK_VERSION: "7.0.*"
 
 jobs:
   build-win-x64-arm64:
