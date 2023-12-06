@@ -581,5 +581,10 @@ namespace N_m3u8DL_RE.Parser.Extractor
         {
             await FetchPlayListAsync(streamSpecs);
         }
+
+        public string GetContent()
+        {
+            return this.M3u8Content;
+        }
     }
 }

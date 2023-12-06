@@ -17,6 +17,7 @@ namespace N_m3u8DL_RE.Parser
         private ParserConfig parserConfig = new ParserConfig();
         private string rawText;
         private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        public String ExtractorContent { get => extractor.GetContent();}
 
         public Dictionary<string, string> RawFiles { get; set; } = new(); //存储（文件名,文件内容）
 

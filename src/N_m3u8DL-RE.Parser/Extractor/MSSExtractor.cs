@@ -397,5 +397,10 @@ namespace N_m3u8DL_RE.Parser.Extractor
             //这里才调用URL预处理器，节省开销
             await ProcessUrlAsync(streamSpecs);
         }
+
+        public string GetContent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

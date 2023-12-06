@@ -49,5 +49,10 @@ namespace N_m3u8DL_RE.Parser.Extractor
         {
             throw new NotImplementedException();
         }
+
+        public string GetContent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

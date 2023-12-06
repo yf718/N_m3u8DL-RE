@@ -307,7 +307,11 @@ namespace N_m3u8DL_RE
             //应用用户自定义的广告分片关键字
             FilterUtil.CleanAd(selectedStreams, option.AdKeywords);
 
-            //记录文件
+            // 记录文件
+            if (extractor.ExtractorType == ExtractorType.HLS)
+            {
+                extractor.RawFiles["content.m3u8"] = extractor.ExtractorContent;
+            }
             extractor.RawFiles["meta_selected.json"] = GlobalUtil.ConvertToJson(selectedStreams);
 
             Logger.Info(ResString.selectedStream);

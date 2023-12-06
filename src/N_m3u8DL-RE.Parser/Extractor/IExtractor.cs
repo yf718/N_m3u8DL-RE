@@ -23,5 +23,7 @@ namespace N_m3u8DL_RE.Parser.Extractor
         string PreProcessUrl(string url);
 
         void PreProcessContent();
+
+        String GetContent();
     }
 }
