@@ -276,8 +276,10 @@ namespace N_m3u8DL_RE.Util
         public static string GetProxyContent(List<StreamSpec> selectedSteams, string content, string tmpDir)
         {
             var pad = "0".PadLeft(getSegmentCount(selectedSteams).ToString().Length, '0');
-            foreach (var item in content.Split("\n"))
+            string[] fileArray = content.Split("\n");
+            for (int i = 0; i < fileArray.Length; i++)
             {
+                string item = fileArray[i];
                 if (!item.StartsWith("#") && !item.Contains("http")) 
                 {
                     var segment = filerMediaSegment(selectedSteams, item);
@@ -285,12 +287,12 @@ namespace N_m3u8DL_RE.Util
                     {
                         var index = HttpUtility.UrlEncode(Path.Combine(tmpDir, "1", segment.Index.ToString(pad) + ".ts"));
                         string encodedUrl = HttpUtility.UrlEncode(segment.Url);
-                        string proxyUrl = "http://localhost:8088/m3u8?url=" + encodedUrl + "&index=" + index;
-                        content = content.Replace(item, proxyUrl);
+                        string proxyUrl =  OtherUtil.GetEnvironmentVariable("HLS_PROXY_URL", "http://localhost:8088") + "/m3u8?url=" + encodedUrl + "&index=" + index;
+                        fileArray[i] = proxyUrl;
                     }
                 }
             }
-            return content;
+            return string.Join("\n", fileArray);
         }
 
 
