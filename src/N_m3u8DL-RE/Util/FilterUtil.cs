@@ -4,12 +4,8 @@ using N_m3u8DL_RE.Common.Log;
 using N_m3u8DL_RE.Common.Resource;
 using N_m3u8DL_RE.Entity;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Web;
 
 namespace N_m3u8DL_RE.Util
 {
@@ -275,6 +271,65 @@ namespace N_m3u8DL_RE.Util
                     Logger.WarnMarkUp("[grey]{} segments => {} segments[/]", countBefore, countAfter);
                 }
             }
+        }
+
+        public static string GetProxyContent(List<StreamSpec> selectedSteams, string content, string tmpDir)
+        {
+            var pad = "0".PadLeft(getSegmentCount(selectedSteams).ToString().Length, '0');
+            foreach (var item in content.Split("\n"))
+            {
+                if (!item.StartsWith("#") && !item.Contains("http")) 
+                {
+                    var segment = filerMediaSegment(selectedSteams, item);
+                    if (segment != null)
+                    {
+                        var index = HttpUtility.UrlEncode(Path.Combine(tmpDir, "1", segment.Index.ToString(pad) + ".ts"));
+                        string encodedUrl = HttpUtility.UrlEncode(segment.Url);
+                        string proxyUrl = "http://localhost:8088/m3u8?url=" + encodedUrl + "&index=" + index;
+                        content = content.Replace(item, proxyUrl);
+                    }
+                }
+            }
+            return content;
+        }
+
+
+
+        private static MediaSegment filerMediaSegment(List<StreamSpec> selectedSteams, string url)
+        {
+            foreach (var stream in selectedSteams)
+            {
+                if (stream.Playlist == null) continue;
+
+                foreach (var part in stream.Playlist.MediaParts)
+                {
+
+                    foreach (var segment in part.MediaSegments)
+                    {
+                        if (segment.Url.Contains(url))
+                        {
+                            return segment;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        private static int getSegmentCount(List<StreamSpec> selectedSteams)
+        {
+            int count = 0;
+            foreach (var stream in selectedSteams)
+            {
+                if (stream.Playlist == null) continue;
+
+                foreach (var part in stream.Playlist.MediaParts)
+                {
+                    count += part.MediaSegments.Count;
+                }
+            }
+            return count;
         }
     }
 }

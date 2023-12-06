@@ -103,8 +103,9 @@ namespace N_m3u8DL_RE.DownloadManager
                 else speedContainer.SingleSegment = true;
             }
 
-            var type = streamSpec.MediaType ?? Common.Enum.MediaType.VIDEO;
-            var dirName = $"{task.Id}_{OtherUtil.GetValidFileName(streamSpec.GroupId ?? "", "-")}_{streamSpec.Codecs}_{streamSpec.Bandwidth}_{streamSpec.Language}";
+            //var type = streamSpec.MediaType ?? Common.Enum.MediaType.VIDEO;
+            //var dirName = $"{task.Id}_{OtherUtil.GetValidFileName(streamSpec.GroupId ?? "", "-")}_{streamSpec.Codecs}_{streamSpec.Bandwidth}_{streamSpec.Language}";
+            var dirName = "1";
             var tmpDir = Path.Combine(DownloaderConfig.DirPrefix, dirName);
             var saveDir = DownloaderConfig.MyOptions.SaveDir ?? Environment.CurrentDirectory;
             var saveName = DownloaderConfig.MyOptions.SaveName != null ? $"{DownloaderConfig.MyOptions.SaveName}.{streamSpec.Language}".TrimEnd('.') : dirName;
