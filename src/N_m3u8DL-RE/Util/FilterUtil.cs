@@ -277,9 +277,14 @@ namespace N_m3u8DL_RE.Util
         {
             var pad = "0".PadLeft(getSegmentCount(selectedSteams).ToString().Length, '0');
             string[] fileArray = content.Split("\n");
+            List<int> delList = new List<int> {};
             for (int i = 0; i < fileArray.Length; i++)
             {
                 string item = fileArray[i];
+                if (item.StartsWith("#EXT-X-KEY"))
+                {
+                    delList.Add(i);
+                }
                 if (!item.StartsWith("#") && !item.Contains("http")) 
                 {
                     var segment = filerMediaSegment(selectedSteams, item);
@@ -291,6 +296,11 @@ namespace N_m3u8DL_RE.Util
                         fileArray[i] = proxyUrl;
                     }
                 }
+            }
+
+            foreach (var item in delList)
+            {
+                DeleteElementAtIndex(ref fileArray, item);
             }
             return string.Join("\n", fileArray);
         }
@@ -332,6 +342,19 @@ namespace N_m3u8DL_RE.Util
                 }
             }
             return count;
+        }
+
+
+        static void DeleteElementAtIndex(ref string[] array, int index)
+        {
+            if (index >= 0 && index < array.Length)
+            {
+                for (int i = index; i < array.Length - 1; i++)
+                {
+                    array[i] = array[i + 1];
+                }
+                Array.Resize(ref array, array.Length - 1);
+            }
         }
     }
 }
