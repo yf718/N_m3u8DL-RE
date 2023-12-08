@@ -273,7 +273,7 @@ namespace N_m3u8DL_RE.Util
             }
         }
 
-        public static string GetProxyContent(List<StreamSpec> selectedSteams, string content, string tmpDir)
+        public static string GetProxyContent(List<StreamSpec> selectedSteams, string content)
         {
             var pad = "0".PadLeft(getSegmentCount(selectedSteams).ToString().Length, '0');
             string[] fileArray = content.Split("\n");
@@ -285,15 +285,21 @@ namespace N_m3u8DL_RE.Util
                 {
                     delList.Add(i);
                 }
-                if (!item.StartsWith("#") && !item.Contains("http")) 
+                if (!item.StartsWith("#")) 
                 {
                     var segment = filerMediaSegment(selectedSteams, item);
                     if (segment != null)
                     {
-                        var index = HttpUtility.UrlEncode(Path.Combine(tmpDir, "1", segment.Index.ToString(pad) + ".ts"));
+                        var index = HttpUtility.UrlEncode(segment.Index.ToString(pad) + ".ts");
                         string encodedUrl = HttpUtility.UrlEncode(segment.Url);
-                        string proxyUrl =  OtherUtil.GetEnvironmentVariable("HLS_PROXY_URL", "http://localhost:8088") + "/m3u8?url=" + encodedUrl + "&index=" + index;
+                        string proxyUrl = OtherUtil.GetEnvironmentVariable("HLS_PROXY_URL", "http://localhost:8088") + "/m3u8?url=" + encodedUrl + "&index=" + index;
                         fileArray[i] = proxyUrl;
+                    }
+                    else
+                    {
+                        // 可能是广告过滤掉的
+                        delList.Add(i);
+                        delList.Add(i-1);
                     }
                 }
             }

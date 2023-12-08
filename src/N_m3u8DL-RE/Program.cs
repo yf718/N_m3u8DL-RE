@@ -310,7 +310,7 @@ namespace N_m3u8DL_RE
             // 记录文件
             if (extractor.ExtractorType == ExtractorType.HLS)
             {
-                extractor.RawFiles["content.m3u8"] = FilterUtil.GetProxyContent(selectedStreams, extractor.ExtractorContent, tmpDir);
+                extractor.RawFiles["content.m3u8"] = FilterUtil.GetProxyContent(selectedStreams, extractor.ExtractorContent);
             }
             extractor.RawFiles["meta_selected.json"] = GlobalUtil.ConvertToJson(selectedStreams);
 
@@ -390,8 +390,18 @@ namespace N_m3u8DL_RE
                 foreach (var item in extractor.RawFiles)
                 {
                     var file = Path.Combine(tmpDir, item.Key);
-                    if (!File.Exists(file)) await File.WriteAllTextAsync(file, item.Value, Encoding.UTF8);
+                    if (!File.Exists(file)) await SaveFileWithUtf8NoBomAsync(file, item.Value);
                 }
+            }
+        }
+
+        static async Task SaveFileWithUtf8NoBomAsync(string filePath, string content)
+        {
+            // 使用UTF-8编码，不包含BOM
+            Encoding utf8NoBom = new UTF8Encoding(false);
+            using (StreamWriter writer = new StreamWriter(filePath, false, utf8NoBom))
+            {
+                await writer.WriteAsync(content);
             }
         }
 
