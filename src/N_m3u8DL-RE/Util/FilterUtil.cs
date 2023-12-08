@@ -310,7 +310,11 @@ namespace N_m3u8DL_RE.Util
                     }
                 }
             }
-            delList.Sort((a, b) => b.CompareTo(a));
+            if (delList.Count > 0)
+            {
+                delList = delList.Distinct().ToList();
+                delList.Sort((a, b) => b.CompareTo(a));
+            }
             foreach (var item in delList)
             {
                 DeleteElementAtIndex(ref fileArray, item);
