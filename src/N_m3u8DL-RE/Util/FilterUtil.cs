@@ -299,11 +299,18 @@ namespace N_m3u8DL_RE.Util
                     {
                         // 可能是广告过滤掉的
                         delList.Add(i);
-                        delList.Add(i-1);
+                        if (i >= 1 && fileArray[i - 1].StartsWith("#EXTINF")) 
+                        {
+                            delList.Add(i-1);
+                        }
+                        if (i >= 2 && fileArray[i - 2].StartsWith("#EXT-X-DISCONTINUITY")) 
+                        {
+                            delList.Add(i - 2);
+                        }
                     }
                 }
             }
-
+            delList.Sort((a, b) => b.CompareTo(a));
             foreach (var item in delList)
             {
                 DeleteElementAtIndex(ref fileArray, item);
