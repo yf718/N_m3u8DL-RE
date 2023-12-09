@@ -310,7 +310,7 @@ namespace N_m3u8DL_RE
             // 记录文件
             if (extractor.ExtractorType == ExtractorType.HLS)
             {
-                extractor.RawFiles["content.m3u8"] = FilterUtil.GetProxyContent(selectedStreams, extractor.ExtractorContent);
+                extractor.RawFiles["content.m3u8"] = FilterUtil.GetProxyContent(selectedStreams, extractor.ExtractorContent, tmpDir);
             }
             extractor.RawFiles["meta_selected.json"] = GlobalUtil.ConvertToJson(selectedStreams);
 
