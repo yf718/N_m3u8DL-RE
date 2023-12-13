@@ -2,6 +2,7 @@
 using N_m3u8DL_RE.Common.Enum;
 using N_m3u8DL_RE.Common.Log;
 using N_m3u8DL_RE.Common.Resource;
+using N_m3u8DL_RE.Common.Util;
 using N_m3u8DL_RE.Entity;
 using Spectre.Console;
 using System.Text.RegularExpressions;
@@ -293,6 +294,10 @@ namespace N_m3u8DL_RE.Util
                         var index = HttpUtility.UrlEncode(Path.Combine(tmpDir, "1", segment.Index.ToString(pad) + ".ts"));
                         string encodedUrl = HttpUtility.UrlEncode(segment.Url);
                         string proxyUrl = OtherUtil.GetEnvironmentVariable("HLS_PROXY_URL", "http://localhost:8088") + "/m3u8?url=" + encodedUrl + "&index=" + index;
+                        EncryptInfo encryptInfo = segment.EncryptInfo;
+                        proxyUrl += "&method=" + encryptInfo.Method;
+                        proxyUrl += encryptInfo.Key == null ? "" : "&key=" + Convert.ToBase64String(encryptInfo.Key);
+                        proxyUrl += encryptInfo.IV == null ? "" : "&iv=" + Convert.ToBase64String(encryptInfo.IV);
                         fileArray[i] = proxyUrl;
                     }
                     else
