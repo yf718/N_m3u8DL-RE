@@ -251,7 +251,7 @@ namespace N_m3u8DL_RE.DownloadManager
                             result.ActualFilePath = dec;
                         }
                     }
-                    if (!readInfo)
+                    if (!readInfo && StreamExtractor.ExtractorType != ExtractorType.HLS)
                     {
                         //ffmpeg读取信息
                         Logger.WarnMarkUp(ResString.readingInfo);
