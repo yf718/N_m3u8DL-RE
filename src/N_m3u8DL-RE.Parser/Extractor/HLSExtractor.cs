@@ -332,7 +332,7 @@ namespace N_m3u8DL_RE.Parser.Extractor
                     lastKeyLine = line;
                     if (currentEncryptInfo != null && currentEncryptInfo.Key != null)
                     {
-                        newContents[newContents.Count - 1] = line.Replace(uri, "data:text/plain;base64," + Convert.ToBase64String(currentEncryptInfo.Key));
+                        newContents[newContents.Count - 1] = line.Replace(uri, "/ext-x-key?key=" + Convert.ToBase64String(currentEncryptInfo.Key));
                     }
                 }
                 //解析分片时长
