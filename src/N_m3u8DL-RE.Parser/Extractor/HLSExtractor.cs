@@ -247,13 +247,14 @@ namespace N_m3u8DL_RE.Parser.Extractor
             MediaPart mediaPart = new();
             MediaSegment segment = new();
             List<MediaSegment> segments = new();
+            List<String> newContents = new();
 
 
             while ((line = sr.ReadLine()) != null)
             {
                 if (string.IsNullOrEmpty(line))
                     continue;
-
+                newContents.Add(line);
                 //只下载部分字节
                 if (line.StartsWith(HLSTags.ext_x_byterange))
                 {
@@ -329,6 +330,10 @@ namespace N_m3u8DL_RE.Parser.Extractor
                         currentEncryptInfo.IV = parsedInfo.IV;
                     }
                     lastKeyLine = line;
+                    if (currentEncryptInfo != null && currentEncryptInfo.Key != null)
+                    {
+                        newContents[newContents.Count - 1] = line.Replace(uri, "data:text/plain;base64," + Convert.ToBase64String(currentEncryptInfo.Key));
+                    }
                 }
                 //解析分片时长
                 else if (line.StartsWith(HLSTags.extinf))
@@ -449,6 +454,7 @@ namespace N_m3u8DL_RE.Parser.Extractor
                 playlist.RefreshIntervalMs = (int)((playlist.TargetDuration ?? 5) * 2 * 1000);
             }
 
+            this.M3u8Content = string.Join("\n", newContents);
             return playlist;
         }
 

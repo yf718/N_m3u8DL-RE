@@ -34,7 +34,7 @@ namespace N_m3u8DL_RE.Downloader
         {
             var url = segment.Url;
             var dResult = await DownClipAsync(url, savePath, speedContainer, segment.StartRange, segment.StopRange, headers, DownloaderConfig.MyOptions.DownloadRetryCount);
-            if (dResult != null && dResult.Success && segment.EncryptInfo != null)
+            /*if (dResult != null && dResult.Success && segment.EncryptInfo != null)
             {
                 if (segment.EncryptInfo.Method == EncryptMethod.AES_128)
                 {
@@ -72,7 +72,7 @@ namespace N_m3u8DL_RE.Downloader
                 {
                     await OtherUtil.DeGzipFileAsync(dResult.ActualFilePath);
                 }
-            }
+            }*/
             return dResult;
         }
 
