@@ -110,7 +110,7 @@ namespace N_m3u8DL_RE.Util
 
         public static bool MergeByFFmpeg(string binary, string[] files, string outputPath, string muxFormat, bool useAACFilter,
             bool fastStart = false,
-            bool writeDate = true, string poster = "", string audioName = "", string title = "",
+            bool writeDate = true, bool useConcatDemuxer = false, string poster = "", string audioName = "", string title = "",
             string copyright = "", string comment = "", string encodingTool = "", string recTime = "")
         {
             //改为绝对路径
@@ -118,16 +118,29 @@ namespace N_m3u8DL_RE.Util
 
             string dateString = string.IsNullOrEmpty(recTime) ? DateTime.Now.ToString("o") : recTime;
 
-            StringBuilder command = new StringBuilder("-loglevel warning -nostdin -i concat:\"");
+            StringBuilder command = new StringBuilder("-loglevel warning -nostdin ");
             string ddpAudio = string.Empty;
             string addPoster = "-map 1 -c:v:1 copy -disposition:v:1 attached_pic";
             ddpAudio = (File.Exists($"{Path.GetFileNameWithoutExtension(outputPath + ".mp4")}.txt") ? File.ReadAllText($"{Path.GetFileNameWithoutExtension(outputPath + ".mp4")}.txt") : "");
             if (!string.IsNullOrEmpty(ddpAudio)) useAACFilter = false;
 
-            foreach (string t in files)
+            if (useConcatDemuxer)
             {
-                command.Append(Path.GetFileName(t) + "|");
+                // 使用 concat demuxer合并
+                var text = string.Join(Environment.NewLine, files.Select(f => $"file '{f}'"));
+                var tempFile = Path.GetTempFileName();
+                File.WriteAllText(tempFile, text);
+                command.Append($" -f concat -safe 0 -i \"{tempFile}");
             }
+            else
+            {
+                command.Append(" -i concat:\"");
+                foreach (string t in files)
+                {
+                    command.Append(Path.GetFileName(t) + "|");
+                }
+            }
+
 
             switch (muxFormat.ToUpper())
             {
@@ -177,7 +190,7 @@ namespace N_m3u8DL_RE.Util
         {
             var ext = mp4 ? "mp4" : "mkv";
             string dateString = DateTime.Now.ToString("o");
-            StringBuilder command = new StringBuilder("-loglevel warning -nostdin -y ");
+            StringBuilder command = new StringBuilder("-loglevel warning -nostdin -y -dn ");
 
             //INPUT
             foreach (var item in files)
